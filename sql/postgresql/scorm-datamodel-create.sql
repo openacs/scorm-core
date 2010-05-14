@@ -270,21 +270,6 @@ create index cp_tree_child_idx on cp_tree (child);
 create index cp_tree_parent_idx on cp_tree (parent);
 create index cp_tree_cp_package_id_idx on cp_tree (cp_package_id);
 
--- many fields are added to this table in dbupdate
-create table usr_data (
- usr_id               serial
-                      constraint usr_data_usr_id_pk
-                      primary key,
- email                varchar(80),
- firstname            varchar(32),
- ilinc_id             integer,
- lastname             varchar(32),
- login                varchar(80),
- matriculation        varchar(50),
- passwd               varchar(32),
- title                varchar(32)
-);
-
 create table cp_suspend (
  user_id       integer
                constraint cp_suspend_user_id_fk

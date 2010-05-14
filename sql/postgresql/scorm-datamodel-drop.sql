@@ -9,7 +9,6 @@ drop table cmi_interaction cascade;
 drop table cmi_comment cascade;
 drop table cmi_node cascade;
 drop table cp_suspend cascade;
-drop table usr_data cascade;
 
 -- now cp stuff
 drop table cp_auxilaryresource cascade;
