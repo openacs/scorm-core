@@ -25,9 +25,13 @@ create table cp_package (
 
 create index cp_package_identifier_idx on cp_package (c_identifier);
 
+-- This sequence isn't strictly necessary but it makes the cp_tree easier to
+-- read (for humans).
+
+create sequence cp_node_seq;
 
 create table cp_node (
- cp_node_id  serial
+ cp_node_id  integer
              constraint cp_node_cp_node_id_pk
              primary key,
  nodename    text,
@@ -257,7 +261,6 @@ create table cp_tree (
                references cp_node
                on delete cascade,
  depth         integer,
- lft           integer,
  cp_package_id integer
                constraint cp_tree_cp_package_id_fk
                references cp_package
@@ -269,6 +272,19 @@ create table cp_tree (
 create index cp_tree_child_idx on cp_tree (child);
 create index cp_tree_parent_idx on cp_tree (parent);
 create index cp_tree_cp_package_id_idx on cp_tree (cp_package_id);
+
+comment on table cp_tree is '
+  To find all of the children of a node, execute the query:
+
+  select children.child
+  from cp_tree parent, cp_tree children
+  where children.child between parent.child+1 and parent.rgt
+  order by children.child
+
+  To restrict the query to the immediate children, add
+
+  and children.parent = parent.child
+';
 
 create table cp_suspend (
  user_id       integer
@@ -298,7 +314,7 @@ create index lng_data_lang_key on lng_data (lang_key);
 -- MS: was a circular key reference in orig (cmi_node_id was both autoincrement here 
 -- and fk to cmi_interactions, which in turn referenced this table)
 create table cmi_node (
- cmi_node_id                    serial
+ cmi_node_id                    integer
                                 constraint cmi_node_cmi_node_id_pk
                                 primary key,
  cp_node_id                     integer
@@ -358,7 +374,7 @@ create index cmi_node_cmi_node_id on cmi_node (cmi_node_id);
 create index cmi_node_user_id on cmi_node (user_id);
 
 create table cmi_interaction (
- cmi_interaction_id          serial
+ cmi_interaction_id          integer
                              constraint cmi_interactions_interaction_id_pk
                              primary key,
  cmi_node_id                 integer
@@ -379,7 +395,7 @@ create index cmi_interactions_id_idx on cmi_interaction (id);
 create index cmi_interactions_type_idx on cmi_interaction (c_type);
 
 create table cmi_correct_response (
- cmi_correct_response_id          serial
+ cmi_correct_response_id          integer
                                   constraint cmi_correct_responses_response_id_pk
                                   primary key,
  cmi_interaction_id               integer
@@ -392,7 +408,7 @@ create table cmi_correct_response (
 create index cmi_correct_responses_interaction_id_idx on cmi_correct_response (cmi_interaction_id);
 
 create table cmi_objective (
- cmi_objective_id          serial
+ cmi_objective_id          integer
                            constraint cmi_objective_objective_id_pk
                            primary key,
  cmi_interaction_id        integer
@@ -434,7 +450,7 @@ create table cmi_gobjective (
 );
 
 create table cmi_comment (
- cmi_comment_id          serial
+ cmi_comment_id          integer
                          constraint cmi_comment_pk
                          primary key,
  cmi_node_id             integer
