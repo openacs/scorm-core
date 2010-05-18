@@ -279,11 +279,16 @@ comment on table cp_tree is '
   select children.child
   from cp_tree parent, cp_tree children
   where children.child between parent.child+1 and parent.rgt
+    and children.cp_package_id = (the course id)
   order by children.child
 
   To restrict the query to the immediate children, add
 
   and children.parent = parent.child
+
+  The restriction by course id is necessary because we do not guarantee that the
+  nodes for a course are numbered consecutively (they will not be after a course
+  is edited).
 ';
 
 create table cp_suspend (
