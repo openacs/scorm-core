@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message_catalog package_key="scorm-core" locale="en_US" charset="ISO-8859-1">
+              
+<msg key="CourseExists">A course named "%title%" already exists.</msg>
+
+</message_catalog>
