@@ -343,7 +343,7 @@ create table cmi_node (
  availablechildren              text,
  completion                     real,
  completion_status              text,
- completion_threshold           text,
+ completion_threshold           real,
  created                        text,
  credit                         text,
  delivery_speed                 real,
@@ -424,16 +424,16 @@ create table cmi_objective (
                            constraint cmi_objective_cmi_node_id_fk
                            references cmi_node (cmi_node_id)
                            on delete cascade,
- completion_status         real,
+ completion_status         text,
  description               text,
- id                        varchar(255),
+ id                        text,
  c_max                     real,
  c_min                     real,
  c_raw                     real,
  scaled                    real,
  progress_measure          real,
- success_status            varchar(32),
- scope                     varchar(16)
+ success_status            text,
+ scope                     text
 );
 
 create index cmi_objectives_interaction_id_idx on cmi_objective (cmi_interaction_id);
@@ -470,39 +470,3 @@ create table cmi_comment (
 
 create index cmi_comment_cmi_node_id_idx on cmi_comment(cmi_node_id);
 
--- scorm stuff? not part of scorm 2004 data model in ilias but is used
--- what is sco_id ????
-create table scorm_tracking (
- user_id       integer
-               constraint scorm_tracking_user_id_fk
-               references users
-               on delete cascade,
- cp_package_id integer
-               constraint scorm_tracking_cp_package_id_fk
-               references cp_package
-               on delete cascade,
- sco_id        integer,
- c_timestamp   timestamptz,
- lvalue        text,
- rvalue        text,
- constraint    scorm_tracking_pk
-               primary key (user_id, cp_package_id, sco_id, lvalue)
-);
-
--- same for this table (wtf??)
-create table cmi_custom (
- user_id       integer
-               constraint cmi_custom_user_id_fk
-               references users
-               on delete cascade,
- cp_package_id integer
-               constraint cmi_custom_cp_package_id_fk
-               references cp_package
-               on delete cascade,
- sco_id        integer,
- c_timestamp   timestamptz,
- lvalue        text,
- rvalue        text,
- constraint    cmi_custom_pk
-               primary key (user_id, cp_package_id, sco_id, lvalue)
-);

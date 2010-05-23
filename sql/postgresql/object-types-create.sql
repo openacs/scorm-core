@@ -168,34 +168,36 @@ select acs_attribute__create_attribute (
 	'f'
 	);
 
-select define_function_args('scorm_course__new','scorm_course_id,auto_review;f,credit;credit,default_lesson_mode;normal,online;f,type,folder_id,title,context_id,creation_user,creation_ip');
+select define_function_args('scorm_course__new','scorm_course_id,object_type;scorm_course,auto_review;f,credit;credit,default_lesson_mode;normal,online;f,type,folder_id,title,context_id,creation_user,creation_ip,package_id');
 
-create or replace function scorm_course__new (integer,boolean,varchar,varchar,boolean,varchar,integer,varchar,integer,integer,varchar)
+create or replace function scorm_course__new (integer,text,boolean,varchar,varchar,boolean,varchar,integer,varchar,integer,integer,varchar,integer)
 returns integer as '
 declare
   p_scorm_course_id      alias for $1;
-  p_auto_review          alias for $2; 
-  p_credit               alias for $3;  
-  p_default_lesson_mode  alias for $4;  
-  p_online               alias for $5;
-  p_type                 alias for $6;
-  p_folder_id            alias for $7;
-  p_title                alias for $8;
-  p_context_id           alias for $9;
-  p_creation_user        alias for $10;
-  p_creation_ip          alias for $11;
+  p_object_type          alias for $2;
+  p_auto_review          alias for $3; 
+  p_credit               alias for $4;  
+  p_default_lesson_mode  alias for $5;  
+  p_online               alias for $6;
+  p_type                 alias for $7;
+  p_folder_id            alias for $8;
+  p_title                alias for $9;
+  p_context_id           alias for $10;
+  p_creation_user        alias for $11;
+  p_creation_ip          alias for $12;
+  p_package_id           alias for $13;
   v_scorm_course_id      scorm_courses.scorm_course_id%TYPE;
 begin
     v_scorm_course_id := acs_object__new (
       p_scorm_course_id,
-      ''scorm_course'',
+      p_object_type,
       now(),
       p_creation_user,
       p_creation_ip,
       p_context_id,
       ''t'',
       p_title,
-      null
+      p_package_id
     );
 
     insert into scorm_courses
@@ -207,7 +209,6 @@ begin
     return v_scorm_course_id;
    
 end;' language 'plpgsql';
-
 
 select define_function_args('scorm_course__delete','scorm_course_id');
 create or replace function scorm_course__delete (integer)

@@ -12,6 +12,7 @@
     <version name="0.1d1" url="http://openacs.org/repository/download/apm/scorm-core-0.1d1.apm">
         <owner url="mailto:admin@hub.partners.org">Hub System Administrator</owner>
         <maturity>0</maturity>
+        <summary>Core datamodel and tcl library for SCORM course packages</summary>
 
         <provides url="scorm-core" version="0.1d1"/>
 

@@ -1,5 +1,5 @@
 
-drop function scorm_course__new (integer,varchar,varchar,varchar,varchar,varchar,integer,varchar,integer,integer,varchar);
+drop function scorm_course__new (integer,text,boolean,varchar,varchar,boolean,varchar,integer,varchar,integer,integer,varchar);
 
 drop function scorm_course__delete (integer);
 
