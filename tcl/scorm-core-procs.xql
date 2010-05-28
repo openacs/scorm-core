@@ -31,6 +31,13 @@
         </querytext>
     </fullquery>
 
+    <fullquery name="scorm_core::edit_course.delete_cp_nodes">
+        <querytext>
+          delete from cp_node
+          where cp_package_id = :course_id
+        </querytext>
+    </fullquery>
+
     <fullquery name="scorm_core::update_rte_data.update_package">
         <querytext>
           update cp_package
@@ -39,6 +46,15 @@
             activitytree = :activity_tree,
             global_to_system = :global_to_system
           where cp_package_id = :scorm_course_id
+        </querytext>
+    </fullquery>
+
+
+    <fullquery name="scorm_core::get_manifest.get_manifest">
+        <querytext>
+          select xmldata
+          from cp_package
+          where cp_package_id = :course_id
         </querytext>
     </fullquery>
 

@@ -68,7 +68,7 @@ ad_proc scorm_core::create_course {
         return -code error [_ scorm-importer.NotSCORM2004]
     }
 
-    set default_organization [scorm_core::default_organization -manifest $manifest_doc]
+    set default_organization [scorm_core::get_default_organization -manifest $manifest_doc]
     set title [[$default_organization child 1 title] text]
 
     if { [db_0or1row course_exists {}] } {
@@ -112,7 +112,12 @@ ad_proc scorm_core::edit_course {
     Edit the course information, using a parsed manifest.  At the moment, this
     rebuilds the cp_node structure, so tracking data for the course is lost.
 } {
-    # delete old cp_nodes unless I can figure out how to preserve them.
+
+    # Delete old cp_nodes until I can figure out how to preserve them.  This will
+    # also delete the cmi data, i.e. tracking information.
+
+    db_dml delete_cp_nodes {}
+
     scorm_core::update_rte_data \
         -scorm_course_id $course_id \
         -manifest $manifest
@@ -148,6 +153,14 @@ ad_proc scorm_core::transform {
 } {
     set xsl_src "[acs_root_dir]/packages/scorm-importer/templates/xsl/op/op-scorm13.xsl"
     return [[$manifest xslt [dom parse [::tDOM::xmlReadFile $xsl_src]]] documentElement]
+}
+
+ad_proc scorm_core::get_manifest {
+    -course_id:required
+} {
+    Return the saved manifest XML.
+} {
+    return [db_string get_manifest {} -default ""]
 }
 
 ad_proc scorm_core::create_folder {
@@ -256,7 +269,7 @@ ad_proc scorm_core::cp::create_node {
     return $rgt
 }
 
-ad_proc scorm_core::default_organization {
+ad_proc scorm_core::get_default_organization {
     -manifest:required
 } {
     Return the default organization for the course, null if none exists.
@@ -291,8 +304,10 @@ ad_proc scorm_core::rte_jsdata::create {
         if { [$item hasAttribute resourceId] } {
             # get reference to resource and set href accordingly
             set resource $resources([$item getAttribute resourceId])
-            #$item setAttribute href "[$resource getAttribute base] [$resource getAttribute href]"
-            $item setAttribute href "[$resource getAttribute href]"
+            $item setAttribute href [$resource getAttribute href]
+            if { [$resource hasAttribute base] } {
+                $item setAttribute base [$resource getAttribute base]
+            }
             $item removeAttribute resourceId
             if { [$resource getAttribute scormType] eq "sco" } {
                 $item setAttribute sco 1
@@ -370,7 +385,7 @@ ad_proc scorm_core::rte_activity_tree::create {
     global sequencing_collection
     set sequencing_collection [$manifest getElementsByTagName "imsss:sequencingCollection"]
 
-    set default_org [scorm_core::default_organization -manifest $manifest]
+    set default_org [scorm_core::get_default_organization -manifest $manifest]
 
     set activity_tree [scorm_core::rte_activity_tree::seq_activity -node $default_org -order -1]
 
@@ -407,6 +422,7 @@ ad_proc scorm_core::rte_activity_tree::seq_activity {
     foreach child [$node childNodes] {
         switch -- [$child localName] {
             item {
+
                 # store counter for child ordering in node
                 if { [$node hasAttribute order] } {
                     set order [$node getAttribute order]
