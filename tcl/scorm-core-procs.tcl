@@ -123,6 +123,16 @@ ad_proc scorm_core::edit_course {
         -manifest $manifest
 }
 
+ad_proc scorm_core::delete_course {
+    -course_id:required
+} {
+    Delete a course and associated tracking data.
+} {
+    db_1row get_folder_id {}
+    content::folder::delete -folder_id $folder_id -cascade_p t
+    package_exec_plsql -var_list [subst {{scorm_course_id $course_id}}] scorm_course delete
+}
+
 ad_proc scorm_core::update_rte_data {
     -scorm_course_id:required
     -manifest:required

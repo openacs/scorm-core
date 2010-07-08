@@ -361,10 +361,10 @@ create table cmi_node (
  c_raw                          real,
  scaled                         real,
  scaled_passing_score           real,
- session_time                   text,
+ session_time                   interval,
  success_status                 text,
  suspend_data                   text,
- total_time                     text,
+ total_time                     interval,
  user_id                        integer
                                 constraint cp_node_user_id_fk
                                 references users
@@ -450,6 +450,7 @@ create table cmi_gobjective (
  scope_id                   integer,
  status                     text,
  objective_id               text,
+ c_timestamp                timestamptz,
  constraint                 cmi_gobjective_pk
                             primary key (user_id, objective_id, scope_id)
 );

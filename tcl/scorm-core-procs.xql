@@ -38,6 +38,14 @@
         </querytext>
     </fullquery>
 
+    <fullquery name="scorm_core::delete_course.get_folder_id">
+        <querytext>
+          select folder_id
+          from scorm_courses
+          where scorm_course_id = :course_id
+        </querytext>
+    </fullquery>
+
     <fullquery name="scorm_core::update_rte_data.update_package">
         <querytext>
           update cp_package
