@@ -756,10 +756,15 @@ ad_proc scorm_core::rte_activity_tree::seq_objective {
         set objective(mObjID) [$node getAttribute "objectiveID"]
     }
     if { [$node hasAttribute "satisfiedByMeasure"] } {
-        set objective(mSatisfiedByMeasure) [$node getAttribute "objectiveID"]
+        set objective(mSatisfiedByMeasure) \
+            [scorm_core::rte_activity_tree::convert_to_bool \
+                [$node getAttribute "satisfiedByMeasure"]]
     }
-    if { [$node hasAttribute "minNormalizedMeasure"] } {
-        set objective(mMinMeasure) [$node getAttribute "objectiveID"]
+    set mnms [$node getElementsByTagName "imsss:minNormalizedMeasure"]
+    if { [llength $mnms] == 1 } {
+        set objective(mMinMeasure) [$mnms text]
+    } elseif { [llength $mnms] > 1 } {
+        return -code error "More than one minNormalizedMeasure element detected for seq object"
     }
 
     set maps [list]
