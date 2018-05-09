@@ -428,7 +428,7 @@ ad_proc scorm_core::rte_activity_tree::seq_activity {
     set activity(mActiveOrder) $order
     unset order
 
-    set children {}
+    set children [list]
     foreach child [$node childNodes] {
         switch -- [$child localName] {
             item {
@@ -712,8 +712,8 @@ ad_proc scorm_core::rte_activity_tree::get_objectives {
 
     upvar $result local_result
 
-    set objectives {}
-    set shortcuts {}
+    set objectives [list]
+    set shortcuts [list]
     foreach child [$node childNodes] {
         if { [$child nodeType] eq "ELEMENT_NODE" } {
             if { [$child localName] eq "primaryObjective" || [$child localName] eq "objective" } {
@@ -767,7 +767,7 @@ ad_proc scorm_core::rte_activity_tree::seq_objective {
         return -code error "More than one minNormalizedMeasure element detected for seq object"
     }
 
-    set maps {}
+    set maps [list]
     foreach child [$node getElementsByTagName "imsss:mapInfo"] {
         lappend maps \
             [scorm_core::rte_activity_tree::seq_objective_map -node $child]
@@ -790,7 +790,7 @@ ad_proc scorm_core::rte_activity_tree::objective_map_shortcut {
     -node:required
 } {
 
-    set maps {}
+    set maps [list]
     if { [$node hasAttribute "objectiveID"] } {
         set objective_id [$node getAttribute "objectiveID"]
     }
@@ -848,9 +848,9 @@ ad_proc scorm_core::rte_activity_tree::get_sequencing_rules {
 
     upvar $result local_result
 
-    set pre_rules {}
-    set exit_rules {}
-    set post_rules {}
+    set pre_rules [list]
+    set exit_rules [list]
+    set post_rules [list]
 
     foreach child [$node childNodes] {
         if { [$child nodeType] eq "ELEMENT_NODE" } {
@@ -912,7 +912,7 @@ ad_proc scorm_core::rte_activity_tree::seq_rule {
 } {
     array set rule [scorm_core::rte_activity_tree::seq_rule_attributes]
 
-    set condition_sets {}
+    set condition_sets [list]
     foreach child [$node childNodes] {
         if { [$child nodeType] eq "ELEMENT_NODE" } {
             switch [$child localName] {
@@ -970,7 +970,7 @@ ad_proc scorm_core::rte_activity_tree::get_rollup_rules {
 
     array set rollup_ruleset [scorm_core::rte_activity_tree::rollup_ruleset_attributes]
 
-    set rollup_rules {}
+    set rollup_rules [list]
     foreach child [$node getElementsByTagName "imsss:rollupRule"] {
         lappend rollup_rules \
             [scorm_core::rte_activity_tree::seq_rollup_rule -node $child]
@@ -1005,7 +1005,7 @@ ad_proc scorm_core::rte_activity_tree::seq_rollup_rule {
         set rule(mMinPercent) [$node getAttribute "minimumPercent"]
     }
 
-    set condition_sets {}
+    set condition_sets [list]
     foreach child [$node childNodes] {
         if { [$child nodeType] eq "ELEMENT_NODE" } {
             switch [$child localName] {
@@ -1082,7 +1082,7 @@ ad_proc scorm_core::rte_activity_tree::seq_condition_set {
         set condition_set(mCombination) [$node getAttribute "conditionCombination"]
     }
 
-    set conditions {}
+    set conditions [list]
     foreach child [$node getElementsByTagName $tag_name] {
         lappend conditions \
             [scorm_core::rte_activity_tree::seq_condition \
@@ -1138,7 +1138,7 @@ ad_proc scorm_core::rte_activity_tree::get_auxiliary_resources {
 } {
     upvar $result local_result
 
-    set resources {}
+    set resources [list]
     foreach child [$node getElementsByTagName "auxiliaryResource"] {
         lappend resources \
             [scorm_core::rte_activity_tree::auxiliary_resource -node $child]
