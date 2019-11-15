@@ -162,7 +162,7 @@ ad_proc scorm_core::transform {
     Transform the manifest using ilias's normalizing xsl.
 } {
     set xsl_src "[acs_root_dir]/packages/scorm-importer/templates/xsl/op/op-scorm13.xsl"
-    return [[$manifest xslt [dom parse [::tDOM::xmlReadFile $xsl_src]]] documentElement]
+    return [[$manifest xslt [dom parse [::tdom::xmlReadFile $xsl_src]]] documentElement]
 }
 
 ad_proc scorm_core::get_manifest {
